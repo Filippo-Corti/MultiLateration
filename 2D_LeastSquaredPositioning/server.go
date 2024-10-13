@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"image"
-	"image/color"
 	"image/png"
 	"net/http"
 
@@ -34,7 +33,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 
 	ctx := gg.NewContextForRGBA(image)
 
-	ctx.SetRGB(1, 0, 0)
+	ctx.SetRGB255(255, 0, 0)
 	ctx.DrawCircle(250, 250, 100)
 	ctx.Stroke()
 
