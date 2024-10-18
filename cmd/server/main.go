@@ -17,14 +17,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func canvasHandler(w http.ResponseWriter, r *http.Request) {
-
 	controller := controllers.NewSpaceController(1000, 800)
 
 	controller.AddStation(200, 150)
 	controller.AddStation(800, 300)
-	controller.AddStation(600, 450)
+	controller.AddStation(500, 300)
 
-	image := controller.RenderView()
+	controller.SetTarget(300, 360)
+
+	controller.OperateExactMultilateration()
+
+	image := controller.RenderView(true)
 
 	png.Encode(w, image)
 }

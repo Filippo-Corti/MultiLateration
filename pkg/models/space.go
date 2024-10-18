@@ -6,6 +6,7 @@ type Space struct {
 	Width    int
 	Height   int
 	Stations []*Station
+	Target   *Target
 }
 
 func NewSpace(width, height int) *Space {
@@ -16,11 +17,24 @@ func NewSpace(width, height int) *Space {
 	}
 }
 
+func (s *Space) inBounds(x, y float64) bool {
+	return (x >= 0 && x <= float64(s.Width)) || (y >= 0 && y <= float64(s.Height))
+}
+
 func (s *Space) AddStation(station *Station) error {
-	if station.X < 0 || station.X > float64(s.Width) || station.Y < 0 || station.Y > float64(s.Height) {
-		return errors.New("Station out of bounds")
+	if !s.inBounds(station.X, station.Y) {
+		return errors.New("station out of bounds")
 	}
 
 	s.Stations = append(s.Stations, station)
+	return nil
+}
+
+func (s *Space) SetTarget(target *Target) error {
+	if !s.inBounds(target.X, target.Y) {
+		return errors.New("target out of bounds")
+	}
+
+	s.Target = target
 	return nil
 }
