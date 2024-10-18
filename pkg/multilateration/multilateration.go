@@ -1,9 +1,6 @@
 package multilateration
 
 import (
-	"fmt"
+	"log/slog"
 )
 
-func SayHi() {
-	fmt.Println("Hi")
-}

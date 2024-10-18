@@ -1,4 +1,4 @@
-module server
+module positioning
 
 go 1.19
 
