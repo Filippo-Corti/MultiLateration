@@ -5,9 +5,7 @@ import (
 	"image/png"
 	"log/slog"
 	"net/http"
-
-	"positioning/pkg/graphics"
-
+	"positioning/pkg/controllers"
 )
 
 type TemplateData struct {
@@ -19,10 +17,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func canvasHandler(w http.ResponseWriter, r *http.Request) {
-	image := graphics.BuildSimpleLaterationImage()
+
+	controller := controllers.NewSpaceController(1000, 800)
+
+	controller.AddStation(200, 150)
+	controller.AddStation(800, 300)
+	controller.AddStation(600, 450)
+
+	image := controller.RenderView()
+
 	png.Encode(w, image)
 }
-
 
 func main() {
 	http.HandleFunc("/", indexHandler)
