@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/fogleman/gg"
+	"server/pkg/multilateration"
 )
 
 type TemplateData struct {
@@ -30,23 +31,25 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func imageHandler(w http.ResponseWriter, r *http.Request) {
 	image := image.NewRGBA(image.Rect(0, 0, 1000, 800))
-
 	ctx := gg.NewContextForRGBA(image)
-
-	ctx.SetRGB255(255, 0, 0)
-	ctx.DrawCircle(500, 400, 100)
-	ctx.Stroke()
-
-	ctx.SetRGB255(0, 255, 0)
-	ctx.DrawCircle(700, 600, 100)
-	ctx.Stroke()
-	
-	ctx.SetRGB255(0, 0, 255)
-	ctx.DrawCircle(300, 200, 100)
-	ctx.Stroke()
-
+	_ = ctx
+	multilateration.SayHi()
 	png.Encode(w, image)
 }
+
+// func buildImage(ctx *gg.Context) {
+// 	ctx.SetRGB255(255, 0, 0)
+// 	ctx.DrawCircle(500, 400, 100)
+// 	ctx.Stroke()
+
+// 	ctx.SetRGB255(0, 255, 0)
+// 	ctx.DrawCircle(700, 600, 100)
+// 	ctx.Stroke()
+
+// 	ctx.SetRGB255(0, 0, 255)
+// 	ctx.DrawCircle(300, 200, 100)
+// 	ctx.Stroke()
+// }
 
 func main() {
 	http.HandleFunc("/", indexHandler)
