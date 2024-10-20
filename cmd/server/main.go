@@ -20,12 +20,13 @@ func canvasHandler(w http.ResponseWriter, r *http.Request) {
 	controller := controllers.NewSpaceController(1000, 800)
 
 	controller.AddStation(200, 150)
-	controller.AddStation(800, 300)
+	controller.AddStation(800, 700)
 	controller.AddStation(500, 300)
+	controller.AddStation(200, 700)
 
 	controller.SetTarget(300, 360)
 
-	controller.OperateExactMultilateration()
+	controller.OperateMultiLaterationWithError()
 
 	image := controller.RenderView(true)
 

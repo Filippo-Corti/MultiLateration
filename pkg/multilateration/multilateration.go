@@ -2,8 +2,10 @@ package multilateration
 
 import (
 	"errors"
+	"math"
 
 	"positioning/pkg/models"
+	"positioning/pkg/utils"
 )
 
 const EPSILON = 10e-3
@@ -39,4 +41,20 @@ func ExactMultilateration(data []*models.Station) (Position, error) {
 	targetPosition := NewPosition(x, y)
 
 	return targetPosition, nil
+}
+
+func LeastSquaredMultilateration(data []*models.Station) Position {
+	
+	gradient := func(x, y float64) (resX, resY float64) { 
+
+		for _, station := range data {
+			resX += 2 * (x - station.X) - 2 * (x - station.X) * station.DistToTarget * 1 / math.Hypot(x - station.X, y - station.Y)
+			resY += 2 * (y - station.Y) - 2 * (y - station.Y) * station.DistToTarget * 1 / math.Hypot(x - station.X, y - station.Y)
+		}
+
+		return
+	}
+
+	x, y := utils.GradientDescent2V(gradient, 0.1, 100, 1)
+	return NewPosition(x, y)
 }

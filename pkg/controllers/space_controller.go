@@ -46,7 +46,7 @@ func (sc *SpaceController) SetTarget(x, y float64) error {
 	}
 
 	for _, station := range sc.Space.Stations {
-		station.DetectTarget(target)
+		station.DetectTargetWithApproxError(target)
 	}
 
 	return nil
@@ -63,4 +63,14 @@ func (sc *SpaceController) OperateExactMultilateration() {
 
 	sc.SpaceView.SetEstimatedTarget(targetPosition)
 	slog.Info("Multilateration finished", "targetPosition", targetPosition)
+}
+
+func (sc *SpaceController) OperateMultiLaterationWithError() {
+	slog.Info("Starting Multilateration with Error in Distance Value")
+
+	targetPosition := ml.LeastSquaredMultilateration(sc.Space.Stations)
+
+	sc.SpaceView.SetEstimatedTarget(targetPosition)
+	slog.Info("Multilateration finished", "targetPosition", targetPosition)
+
 }
