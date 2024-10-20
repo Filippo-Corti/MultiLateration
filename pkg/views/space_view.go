@@ -13,18 +13,13 @@ const STATION_RADIUS = 5
 const TARGET_RADIUS = 5
 
 type SpaceView struct {
-	Space                   *models.Space
-	EstimatedTargetPosition ml.Position
+	Space *models.Space
 }
 
 func NewSpaceView(space *models.Space) *SpaceView {
 	return &SpaceView{
 		Space: space,
 	}
-}
-
-func (sv *SpaceView) SetEstimatedTarget(p ml.Position) {
-	sv.EstimatedTargetPosition = p
 }
 
 func (sv *SpaceView) Render(showStationsArea bool) *image.RGBA {
@@ -34,31 +29,27 @@ func (sv *SpaceView) Render(showStationsArea bool) *image.RGBA {
 	for _, station := range sv.Space.Stations {
 		renderStation(ctx, station, showStationsArea)
 	}
-	renderTarget(ctx, sv.Space.Target)
-	renderEstimatedTarget(ctx, sv.EstimatedTargetPosition)
+	renderTarget(ctx, sv.Space.TargetPosition)
+	renderEstimatedTarget(ctx, sv.Space.EstimatedTargetPosition)
 
 	slog.Info("Space View Rendered")
 
 	return image
 }
 
-func renderStation(ctx *gg.Context, station *models.Station, showStationArea bool) {
+func renderStation(ctx *gg.Context, station *ml.StationData, showStationArea bool) {
 	ctx.SetRGB255(0, 0, 0)
-	ctx.DrawCircle(station.X, station.Y, STATION_RADIUS)
+	ctx.DrawCircle(station.Position.X, station.Position.Y, STATION_RADIUS)
 	ctx.Fill()
 
 	if showStationArea {
 		ctx.SetRGBA255(0, 0, 0, 150)
-		ctx.DrawCircle(station.X, station.Y, station.DistToTarget)
+		ctx.DrawCircle(station.Position.X, station.Position.Y, station.DistToTarget)
 		ctx.Stroke()
 	}
 }
 
-func renderTarget(ctx *gg.Context, target *models.Target) {
-	if target == nil {
-		return
-	}
-
+func renderTarget(ctx *gg.Context, target ml.Position) {
 	ctx.SetRGB255(0, 0, 255)
 	ctx.DrawCircle(target.X, target.Y, STATION_RADIUS)
 	ctx.Fill()
