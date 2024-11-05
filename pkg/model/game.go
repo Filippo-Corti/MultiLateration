@@ -14,22 +14,22 @@ func (c *Cell) toString() string {
 	return fmt.Sprintf("[%d, %d]", c.P.Col, c.P.Row)
 }
 
-type GameModel struct {
+type GameGrid struct {
 	Rows int
 	Cols int
 	Grid [][]Cell
 }
 
-func NewGameModel(rows, cols int) *GameModel {
+func NewGameGrid(rows, cols int) *GameGrid {
 	grid := getStartingGrid(rows, cols)
-	return &GameModel{
+	return &GameGrid{
 		Rows: rows,
 		Cols: cols,
 		Grid: grid,
 	}
 }
 
-func (gm *GameModel) toString() string {
+func (gm *GameGrid) toString() string {
 	str := fmt.Sprintf("Game{Grid: %dx%d}", gm.Rows, gm.Cols)
 	for _, row := range gm.Grid {
 		for _, cell := range row {

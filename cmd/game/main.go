@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"mlat/pkg/constants"
 	"mlat/pkg/model"
 	"mlat/pkg/view"
 	"mlat/pkg/viewmodel"
@@ -11,13 +12,14 @@ import (
 )
 
 func main() {
-	game := model.NewGameModel(10, 10)
+	game := model.NewGameGrid(constants.GRID_WIDTH, constants.GRID_HEIGHT)
 	viewmodel := &viewmodel.GridViewModel{Game: game}
 	view := &view.GameView{ViewModel: viewmodel}
 
-	ebiten.SetWindowSize(640, 480)
-	ebiten.SetWindowTitle("Hello, World!")
+	ebiten.SetWindowSize(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
+	ebiten.SetWindowTitle("Just a Board (for now)")
+
 	if err := ebiten.RunGame(view); err != nil {
-		slog.Error("Problema", "errore", err)
+		slog.Error("Ebiten Game Error", "msg", err)
 	}
 }

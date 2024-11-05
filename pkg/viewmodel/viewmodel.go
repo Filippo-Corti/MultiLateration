@@ -5,9 +5,9 @@ import (
 )
 
 type GridViewModel struct {
-	Game *model.GameModel
+	Game *model.GameGrid
 }
 
 func (gvm *GridViewModel) GetGameGrid() [][]model.Cell {
 	return gvm.Game.Grid
-} 
+}
