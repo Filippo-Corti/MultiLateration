@@ -1,54 +1,34 @@
 package model
 
-import "fmt"
+import "errors"
 
-type Position struct {
-	Row, Col int
+type Game struct {
+	Grid     *GameGrid
+	Stations []*Station
 }
 
-type Cell struct {
-	P Position
-}
-
-func (c *Cell) toString() string {
-	return fmt.Sprintf("[%d, %d]", c.P.Col, c.P.Row)
-}
-
-type GameGrid struct {
-	Rows int
-	Cols int
-	Grid [][]Cell
-}
-
-func NewGameGrid(rows, cols int) *GameGrid {
-	grid := getStartingGrid(rows, cols)
-	return &GameGrid{
-		Rows: rows,
-		Cols: cols,
-		Grid: grid,
+func NewGame(rows, cols int) *Game {
+	return &Game{
+		Grid:     NewGameGrid(rows, cols),
+		Stations: []*Station{},
 	}
 }
 
-func (gm *GameGrid) toString() string {
-	str := fmt.Sprintf("Game{Grid: %dx%d}", gm.Rows, gm.Cols)
-	for _, row := range gm.Grid {
-		for _, cell := range row {
-			str += cell.toString()
-		}
+func (g *Game) AddStation(s Station) error {
+
+	cell := g.Grid.GetCell(s.P)
+
+	if cell == nil || cell.Type != CellTypeEmpty {
+		return errors.New("station can't be placed on non-empty or non-existing cell")
 	}
-	return str
+
+	cell.Type = CellTypeStation
+	g.Stations = append(g.Stations, &s)
+	return nil
 }
 
-func getStartingGrid(rows, cols int) (grid [][]Cell) {
-	grid = make([][]Cell, rows)
-	for r := range rows {
-		grid[r] = make([]Cell, cols)
-		for c := range cols {
-			cell := Cell{
-				P: Position{r, c},
-			}
-			grid[r][c] = cell
-		}
+func (g *Game) ExpandAllStations() {
+	for _, s := range g.Stations {
+		s.expand(g.Grid)
 	}
-	return
 }
