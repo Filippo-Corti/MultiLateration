@@ -20,7 +20,7 @@ var (
 	cellImage     = ebiten.NewImage(constants.CELLSIZE, constants.CELLSIZE)
 	innerCellRect = image.Rect(constants.CELL_INNER_BORDER, constants.CELL_INNER_BORDER, constants.CELLSIZE-constants.CELL_INNER_BORDER, constants.CELLSIZE-constants.CELL_INNER_BORDER)
 
-	tickDuration time.Duration = time.Millisecond * 600
+	tickDuration time.Duration = time.Millisecond * 60
 )
 
 func init() {
@@ -78,10 +78,10 @@ func drawCell(screen *ebiten.Image, cell model.Cell) {
 	// Draw Rectangles
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(x, y)
-	op.ColorScale.ScaleWithColor(cellBackgroundColor(cell.State))
+	op.ColorScale.ScaleWithColor(cellBackgroundColor(cell))
 
 	innerRect := outerRect.SubImage(innerCellRect).(*ebiten.Image)
-	innerRect.Fill(cellColor(cell.State))
+	innerRect.Fill(cellColor(cell))
 
 	screen.DrawImage(outerRect, op)
 

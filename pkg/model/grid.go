@@ -11,6 +11,10 @@ type Position struct {
 	Row, Col int
 }
 
+func (p *Position) Equal(q Position) bool {
+	return p.Row == q.Row && p.Col == q.Col
+}
+
 /* CellType */
 
 type CellType int
@@ -43,20 +47,13 @@ func (t CellType) getTraversingCost() int {
 	}
 }
 
-/* CellState */
-
-type CellState int
-
-const (
-	CellStateEmpty CellState = iota
-	CellStateVisited
-	CellStateOnFrontier
-)
+/* Cell */
 
 type Cell struct {
-	P     Position
-	Type  CellType
-	State CellState
+	P             Position
+	Type          CellType
+	VisitsCount   int
+	OnAnyFrontier bool
 }
 
 func (c *Cell) String() string {
@@ -104,9 +101,10 @@ func getStartingGrid(rows, cols int) (grid [][]Cell) {
 		grid[r] = make([]Cell, cols)
 		for c := range cols {
 			cell := Cell{
-				P:     Position{r, c},
-				Type:  CellTypeEmpty,
-				State: CellStateEmpty,
+				P:             Position{r, c},
+				Type:          CellTypeEmpty,
+				VisitsCount:   0,
+				OnAnyFrontier: false,
 			}
 			grid[r][c] = cell
 		}

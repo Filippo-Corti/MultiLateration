@@ -9,60 +9,67 @@ var Directions = [][2]int{
 
 type Station struct {
 	P              Position
-	visitedByRound [][]Position
+	visitedByRound []map[Position]bool
 }
 
 func NewStation(row, col int) *Station {
 	position := Position{row, col}
 	return &Station{
 		P:              position,
-		visitedByRound: [][]Position{{position}},
+		visitedByRound: []map[Position]bool{{position: true}},
 	}
 }
 
 func (s *Station) expand(gameGrid *GameGrid) {
 	expanding := false
-	frontier := s.visitedByRound[len(s.visitedByRound)-1]
-	newFrontier := []Position{}
 
-	//slog.Info("Expanding with visited length of", "value", len(s.visitedByRound))
+	previousFrontier := map[Position]bool{s.P: true}
+	if len(s.visitedByRound) >= 2 {
+		previousFrontier = s.visitedByRound[len(s.visitedByRound)-2]
+	}
+	frontier := s.visitedByRound[len(s.visitedByRound)-1]
+	newFrontier := map[Position]bool{}
 
 	// Remove Visited more than 3 expansions ago
 	if len(s.visitedByRound) >= 3 {
 		toUnvisit := s.visitedByRound[len(s.visitedByRound)-3]
-		for _, pos := range toUnvisit {
+		for pos := range toUnvisit {
 			cell := gameGrid.GetCell(pos)
 			if cell != nil {
-				cell.State = CellStateEmpty
+				cell.VisitsCount--
 			}
 		}
 		s.visitedByRound = s.visitedByRound[1:]
 	}
 
 	// Expand Frontier
-	for _, frontierPos := range frontier {
+	for frontierPos := range frontier {
 		frontierCell := gameGrid.GetCell(frontierPos)
 
 		for _, dir := range Directions {
 			newPos := Position{frontierPos.Row + dir[0], frontierPos.Col + dir[1]}
 			newCell := gameGrid.GetCell(newPos)
 
-			if newCell == nil || newCell.State != CellStateEmpty {
+			previouslyVisited := previousFrontier[newPos]
+			currentlyVisited := newFrontier[newPos]
+
+			if newCell == nil || previouslyVisited || currentlyVisited {
 				continue
 			}
 
-			newCell.State = CellStateOnFrontier
+			newCell.OnAnyFrontier = true
+			newCell.VisitsCount++
 
-			newFrontier = append(newFrontier, newPos)
+			newFrontier[newPos] = true
 			expanding = true
 		}
 
-		frontierCell.State = CellStateVisited
+		frontierCell.OnAnyFrontier = false
 	}
 
 	//Eventually Restart Expansion
 	if !expanding {
-		s.visitedByRound = append(s.visitedByRound, []Position{s.P})
+		s.visitedByRound = append(s.visitedByRound, map[Position]bool{s.P: true})
 	} else {
 		s.visitedByRound = append(s.visitedByRound, newFrontier)
 	}
