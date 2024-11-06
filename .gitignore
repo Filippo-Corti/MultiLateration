@@ -1,4 +1,4 @@
 # Ignore all .exe files
 *.exe
 
-bin/
+/bin
