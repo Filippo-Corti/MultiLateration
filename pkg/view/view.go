@@ -8,6 +8,7 @@ import (
 	"mlat/pkg/constants"
 	"mlat/pkg/model"
 	"mlat/pkg/viewmodel"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
@@ -18,6 +19,8 @@ var (
 	fontFace      *text.GoTextFaceSource
 	cellImage     = ebiten.NewImage(constants.CELLSIZE, constants.CELLSIZE)
 	innerCellRect = image.Rect(constants.CELL_INNER_BORDER, constants.CELL_INNER_BORDER, constants.CELLSIZE-constants.CELL_INNER_BORDER, constants.CELLSIZE-constants.CELL_INNER_BORDER)
+
+	tickDuration time.Duration = time.Second * 1
 )
 
 func init() {
@@ -33,11 +36,23 @@ func init() {
 }
 
 type GameView struct {
-	ViewModel *viewmodel.GridViewModel
+	ViewModel           *viewmodel.GridViewModel
+	lastUpdateTimestamp time.Time
 }
 
 func (gv *GameView) Update() error {
-	
+	currentTimestamp := time.Now()
+	nextUpdateTimestamp := gv.lastUpdateTimestamp.Add(tickDuration)
+
+	if nextUpdateTimestamp.After(currentTimestamp) {
+		return nil // Don't Update Yet
+	}
+
+	// Update Logic
+	gv.ViewModel.Game.ExpandAllStations()
+	gv.lastUpdateTimestamp = currentTimestamp
+
+	return nil
 }
 
 func (gv *GameView) Draw(screen *ebiten.Image) {
