@@ -20,7 +20,7 @@ var (
 	cellImage     = ebiten.NewImage(constants.CELLSIZE, constants.CELLSIZE)
 	innerCellRect = image.Rect(constants.CELL_INNER_BORDER, constants.CELL_INNER_BORDER, constants.CELLSIZE-constants.CELL_INNER_BORDER, constants.CELLSIZE-constants.CELL_INNER_BORDER)
 
-	tickDuration time.Duration = time.Second * 1
+	tickDuration time.Duration = time.Millisecond * 600
 )
 
 func init() {
