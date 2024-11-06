@@ -18,6 +18,7 @@ func main() {
 
 	game.AddStation(*model.NewStation(5, 5))
 	game.AddStation(*model.NewStation(13, 8))
+	game.AddStation(*model.NewStation(7, 12))
 
 	ebiten.SetWindowSize(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
 	ebiten.SetWindowTitle("Just a Board (for now)")
